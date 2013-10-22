@@ -1,4 +1,7 @@
 scite-properties
 ================
 
-Contains the configuration files (or at least a one) of the SciTE text editor
+Contains a set of configuration files of the SciTE text editor.
+
+NOTE:	Use the user configuration file (SciTEUser.properties) instead of the 
+		global configuration file!
