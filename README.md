@@ -8,4 +8,6 @@ NOTE: Use the user configuration file (SciTEUser.properties) instead of the glob
 
 ### Directory structure
 * **scite**: Contains additional user configuration files
-	* **api**: Contains all the language api-files
+    * **api**: Contains all the language api-files
+	* **ext**: Contains all lua extensions
+	* **themes**: Contains all theme-files
