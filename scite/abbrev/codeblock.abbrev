@@ -1,0 +1,5 @@
+alw=startseq\n   |\nalways\nstopseq,
+one=startseq\n   |\nonerror\nstopseq,
+if=if | then\nendif,
+ife=if | then\nelse\nendif,
+while=while | do\nend,
