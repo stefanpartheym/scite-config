@@ -7,15 +7,18 @@ require "utils"
 
 
 function OnStyle(styler)
-    S_DEFAULT        = 0
-    S_IDENTIFIER     = 1
-    S_KEYWORD        = 2
-    S_COMMENT        = 3
-    S_STRING         = 4
-    S_OPERATOR       = 5
-    S_DECLARATION    = 6
+    S_DEFAULT         = 0
+    S_IDENTIFIER      = 1
+    S_KEYWORD         = 2
+    S_SPECIAL_KEYWORD = 7
+    S_COMMENT         = 3
+    S_STRING          = 4
+    S_OPERATOR        = 5
+    S_DECLARATION     = 6
     
     keywords         = StringSplit(props["keywords.$(file.patterns.codeblock)"],
+                                   " ")
+    special_keywords = StringSplit(props["keywords2.$(file.patterns.codeblock)"],
                                    " ")
     identifier_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" ..
                        "_1234567890"
@@ -35,6 +38,8 @@ function OnStyle(styler)
                     -- need to change the state of the CURRENT token (which is
                     -- a keyword)
                     styler:ChangeState(S_KEYWORD)
+                elseif TableContainsKey(special_keywords, identifier) then
+                    styler:ChangeState(S_SPECIAL_KEYWORD)
                 end
                 
                 styler:SetState(S_DEFAULT)
