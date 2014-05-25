@@ -16,41 +16,41 @@ require "utils"
 -- Load lua extensions
 --------------------------------------------------------------------------------
 function LoadLuaExtensions()
-	----------------------------------------------------------------------------
-	-- Dubgger extension
-	if IsPropertyEnabled("custom.ext.extensions.debugger") then
-		require "ext_debugger"
-		Ext_Debugger_LoadExtension()
-	end
+    ----------------------------------------------------------------------------
+    -- Dubgger extension
+    if IsPropertyEnabled("custom.ext.extensions.debugger") then
+        require "ext_debugger"
+        Ext_Debugger_LoadExtension()
+    end
 end
 
 --------------------------------------------------------------------------------
 -- Load lexers
 --------------------------------------------------------------------------------
 function LoadCustomLexers()
-	if IsPropertyEnabled("custom.ext.loadlexers") then
-		local lexers = props["custom.ext.lexers"]
-		for lexer_path in string.gmatch(lexers, "[^;]+") do
-			local lexer_name = ""
-			for i in string.gmatch(lexer_path, "[^/]+") do
-				lexer_name = i
-			end
-			
-			Log("# Loading custom lexer: " .. lexer_name)
-			if not pcall(function() dofile(lexer_path) end) then
-				Log(">ERROR: Unable to load custom lexer: " .. lexer_name)
-			end
-		end
-	end
+    if IsPropertyEnabled("custom.ext.loadlexers") then
+        local lexers = props["custom.ext.lexers"]
+        for lexer_path in string.gmatch(lexers, "[^;]+") do
+            local lexer_name = ""
+            for i in string.gmatch(lexer_path, "[^/]+") do
+                lexer_name = i
+            end
+            
+            Log("# Loading custom lexer: " .. lexer_name)
+            if not pcall(function() dofile(lexer_path) end) then
+                Log(">ERROR: Unable to load custom lexer: " .. lexer_name)
+            end
+        end
+    end
 end
 
 --------------------------------------------------------------------------------
 -- Main function
 --------------------------------------------------------------------------------
 function OnSciteStartup()
-	Log("# Startup lua-script loaded ...")
-	LoadCustomLexers()
-	LoadLuaExtensions()
+    Log("# Startup lua-script loaded ...")
+    LoadCustomLexers()
+    LoadLuaExtensions()
 end
 
 OnSciteStartup()
