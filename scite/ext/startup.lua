@@ -37,8 +37,10 @@ function LoadCustomLexers()
             end
             
             Log("# Loading custom lexer: " .. lexer_name)
-            if not pcall(function() dofile(lexer_path) end) then
+            local status, err = pcall(function() dofile(lexer_path) end)
+            if not status then
                 Log(">ERROR: Unable to load custom lexer: " .. lexer_name)
+                Log(">>>>Reason: [" .. err .. "]")
             end
         end
     end
