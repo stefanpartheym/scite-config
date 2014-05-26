@@ -7,30 +7,37 @@ require "utils"
 
 
 function OnStyle(styler)
-    S_DEFAULT         = 0
-    S_IDENTIFIER      = 1
+    S_WHITESPACE      = 0
+    S_DEFAULT         = 32
+    S_COMMENT         = 1
     S_KEYWORD         = 2
-    S_SPECIAL_KEYWORD = 7
-    S_COMMENT         = 3
+    S_NUMBER          = 3
     S_STRING          = 4
     S_OPERATOR        = 5
     S_DECLARATION     = 6
+    S_SPECIAL_KEYWORD = 7
+    S_IDENTIFIER      = 8
     
-    keywords         = StringSplit(props["keywords.$(file.patterns.codeblock)"],
-                                   " ")
-    special_keywords = StringSplit(props["keywords2.$(file.patterns.codeblock)"],
-                                   " ")
-    identifier_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" ..
-                       "_1234567890"
-    operator_chars   = "-+*/=<>(){}|:,"
-    newline_chars    = "\r\n"
+    keywords          = StringSplit(props["keywords.$(file.patterns.codeblock)"],
+                                    " ")
+    special_keywords  = StringSplit(props["keywords2.$(file.patterns.codeblock)"],
+                                    " ")
+    number_chars      = "0123456789"
+    identifier_chars  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" ..
+                        "_" .. number_chars
+    operator_chars    = "-+*/=<>(){}|:,"
+    newline_chars     = "\r\n"
     
     ----------------------------------------------------------------------------
     styler:StartStyling(styler.startPos, styler.lengthDoc, styler.initStyle)
     
     while styler:More() do
         -- Exit state if needed
-        if styler:State() == S_IDENTIFIER then
+        if styler:State() == S_NUMBER then
+            if not number_chars:find(styler:Current(), 1, true) then
+                styler:SetState(S_DEFAULT)
+            end
+        elseif styler:State() == S_IDENTIFIER then
             if not identifier_chars:find(styler:Current(), 1, true) then
                 identifier = styler:Token()
                 if TableContainsKey(keywords, identifier) then
@@ -52,19 +59,15 @@ function OnStyle(styler)
                     styler:ForwardSetState(S_DEFAULT)
                 end
             end
-        elseif styler:State() == S_OPERATOR then
+        elseif (styler:State() == S_OPERATOR) or
+               (styler:State() == S_WHITESPACE) then
             styler:SetState(S_DEFAULT)
         elseif styler:State() == S_DECLARATION then
             if styler:Current() == "|" then
                 styler:ForwardSetState(S_DEFAULT)
             end
         elseif styler:State() == S_COMMENT then
-            -- Skip newline characters first (either LF, CR or CRLF)
             if newline_chars:find(styler:Current(), 1, true) then
-                styler:Forward()
-                if newline_chars:find(styler:Current(), 1, true) then
-                    styler:Forward()
-                end
                 styler:SetState(S_DEFAULT)
             end
         end
@@ -80,8 +83,13 @@ function OnStyle(styler)
                 if styler:Current() == "|" then
                     styler:SetState(S_DECLARATION)
                 end
+            elseif number_chars:find(styler:Current(), 1, true) then
+                styler:SetState(S_NUMBER)
             elseif identifier_chars:find(styler:Current(), 1, true) then
                 styler:SetState(S_IDENTIFIER)
+            else
+                -- Everything else is treated as whitespace
+                styler:SetState(S_WHITESPACE)
             end
         end
         
