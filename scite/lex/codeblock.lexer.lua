@@ -59,8 +59,12 @@ function OnStyle(styler)
                 styler:ForwardSetState(S_DEFAULT)
             end
         elseif styler:State() == S_COMMENT then
-            if newline_chars:find(styler:Current(), 1, true) or
-               styler:Match(newline_chars) then
+            -- Skip newline characters first (either LF, CR or CRLF)
+            if newline_chars:find(styler:Current(), 1, true) then
+                styler:Forward()
+                if newline_chars:find(styler:Current(), 1, true) then
+                    styler:Forward()
+                end
                 styler:SetState(S_DEFAULT)
             end
         end
