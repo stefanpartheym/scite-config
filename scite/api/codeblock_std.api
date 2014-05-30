@@ -1,0 +1,1 @@
+WriteLn(aValue:U, ...)  #Writes aValue as string to stdout
