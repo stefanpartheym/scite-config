@@ -94,3 +94,18 @@ function StringSplit(str, delimiter)
     
     return result
 end
+
+--------------------------------------------------------------------------------
+-- Check if file exists
+--------------------------------------------------------------------------------
+function FileExists(file)
+    result = false;
+    f      = io.open(file);
+    
+    if (f ~= nil) then
+        io.close(f);
+        result = true;
+    end
+    
+    return result;
+end
