@@ -1,0 +1,60 @@
+headerfile=\
+#ifndef HEADERFILE_H\n\
+#define HEADERFILE_H\n\
+\n\
+//~ #include <|>\n\
+\n\
+\n\
+// CODE\n\
+\n\
+\n\
+#endif // HEADERFILE_H\n
+
+classheader=\
+#ifndef CLASSHEADER_H\n\
+#define CLASSHEADER_H\n\
+\n\
+//~ #include <>\n\
+\n\
+\n\
+/**\n\
+ * ClassName -- Description\n\
+ */\n\
+class ClassName\n\
+{\n\
+public:\n\
+    ClassName();\n\
+    virtual ~ClassName();\n\
+    \n\
+protected:\n\
+    \n\
+private:\n\
+    \n\
+};\n\
+\n\
+\n\
+#endif // CLASSHEADER_H\n
+
+classimpl=\
+/*******************************************************************************\n\
+ * ClassName -- Description\n\
+ ******************************************************************************/\n\
+\n\
+#include <ClassName.h>\n\
+\n\
+\n\
+// -----------------------------------------------------------------------------\n\
+// Constructor\n\
+// -----------------------------------------------------------------------------\n\
+ClassName::ClassName()\n\
+{\n\
+    // CODE\n\
+}\n\
+\n\
+// -----------------------------------------------------------------------------\n\
+// Destructor\n\
+// -----------------------------------------------------------------------------\n\
+ClassName::~ClassName()\n\
+{\n\
+    // CODE\n\
+}\n\
