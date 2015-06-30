@@ -23,9 +23,10 @@ function OnStyle(styler)
     special_keywords  = StringSplit(props["keywords2.$(file.patterns.codeblock)"],
                                     " ")
     number_chars      = "0123456789"
+    extra_number_chars= "."
     identifier_chars  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" ..
                         "_" .. number_chars
-    operator_chars    = "-+*/=<>(){}|:,"
+    operator_chars    = "-+*/=<>(){}|:,."
     newline_chars     = "\r\n"
     
     ----------------------------------------------------------------------------
@@ -34,7 +35,8 @@ function OnStyle(styler)
     while styler:More() do
         -- Exit state if needed
         if styler:State() == S_NUMBER then
-            if not number_chars:find(styler:Current(), 1, true) then
+            if not number_chars:find(styler:Current(), 1, true) and 
+               not extra_number_chars:find(styler:Current(), 1, true) then
                 styler:SetState(S_DEFAULT)
             end
         elseif styler:State() == S_IDENTIFIER then
