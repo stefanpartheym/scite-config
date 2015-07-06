@@ -26,7 +26,7 @@ function OnStyle(styler)
     extra_number_chars= "."
     identifier_chars  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" ..
                         "_" .. number_chars
-    operator_chars    = "-+*/=<>(){}|:,."
+    operator_chars    = "-+*/=<>(){}[]|:,."
     newline_chars     = "\r\n"
     
     ----------------------------------------------------------------------------
