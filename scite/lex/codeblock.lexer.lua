@@ -29,12 +29,21 @@ function OnStyle(styler)
     operator_chars    = "-+*/=<>(){}[]|:,."
     newline_chars     = "\r\n"
     
+    is_declaration    = false
+    
     ----------------------------------------------------------------------------
     styler:StartStyling(styler.startPos, styler.lengthDoc, styler.initStyle)
     
     while styler:More() do
         -- Exit state if needed
-        if styler:State() == S_NUMBER then
+        if is_declaration then
+            if newline_chars:find(styler:Current(), 1, true) then
+                styler:SetState(S_DECLARATION)
+            elseif styler:Current() == "|" then
+                is_declaration = false
+                styler:ForwardSetState(S_DEFAULT)
+            end
+        elseif styler:State() == S_NUMBER then
             if not number_chars:find(styler:Current(), 1, true) and 
                not extra_number_chars:find(styler:Current(), 1, true) then
                 styler:SetState(S_DEFAULT)
@@ -66,6 +75,7 @@ function OnStyle(styler)
             styler:SetState(S_DEFAULT)
         elseif styler:State() == S_DECLARATION then
             if styler:Current() == "|" then
+                is_declaration = false
                 styler:ForwardSetState(S_DEFAULT)
             end
         elseif styler:State() == S_COMMENT then
@@ -75,7 +85,11 @@ function OnStyle(styler)
         end
         
         -- Enter state if needed
-        if styler:State() == S_DEFAULT then
+        if is_declaration then
+            if styler:Match("//") then
+                styler:SetState(S_COMMENT)
+            end
+        elseif styler:State() == S_DEFAULT then
             if styler:Match("//") then
                 styler:SetState(S_COMMENT)
             elseif styler:Current() == "'" then
@@ -83,6 +97,7 @@ function OnStyle(styler)
             elseif operator_chars:find(styler:Current(), 1, true) then
                 styler:SetState(S_OPERATOR)
                 if styler:Current() == "|" then
+                    is_declaration = true
                     styler:SetState(S_DECLARATION)
                 end
             elseif number_chars:find(styler:Current(), 1, true) then
@@ -90,7 +105,7 @@ function OnStyle(styler)
             elseif identifier_chars:find(styler:Current(), 1, true) then
                 styler:SetState(S_IDENTIFIER)
             else
-                -- Everything else is treated as whitespace
+                -- Everything else is treated as whitespaces
                 styler:SetState(S_WHITESPACE)
             end
         end
