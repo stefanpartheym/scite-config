@@ -18,6 +18,13 @@ function OnStyle(styler)
     S_SPECIAL_KEYWORD = 7
     S_IDENTIFIER      = 8
     
+    -- The string mode specifies which quote character was used to introduce a
+    -- string. One can either use " (double quote) or ' (single quote) for a
+    -- string-literal.
+    STRM_DOUBLE_QUOTE = 1
+    STRM_SINGLE_QUOTE = 2
+    string_mode       = 0
+    
     keywords          = StringSplit(props["keywords.$(file.patterns.codeblock)"],
                                     " ")
     special_keywords  = StringSplit(props["keywords2.$(file.patterns.codeblock)"],
@@ -63,12 +70,16 @@ function OnStyle(styler)
                 styler:SetState(S_DEFAULT)
             end
         elseif styler:State() == S_STRING then
-            if styler:Current() == "'" then
+            if (string_mode == STRM_SINGLE_QUOTE) and
+               (styler:Current() == "'") then
                 if styler:Next() == "'" then
                     styler:Forward() -- Skip ...
                 else
                     styler:ForwardSetState(S_DEFAULT)
                 end
+            elseif (string_mode == STRM_DOUBLE_QUOTE) and
+                   (styler:Current() == '"') then
+                   styler:ForwardSetState(S_DEFAULT)
             end
         elseif (styler:State() == S_OPERATOR) or
                (styler:State() == S_WHITESPACE) then
@@ -94,6 +105,10 @@ function OnStyle(styler)
                 styler:SetState(S_COMMENT)
             elseif styler:Current() == "'" then
                 styler:SetState(S_STRING)
+                string_mode = STRM_SINGLE_QUOTE
+            elseif styler:Current() == '"' then
+                styler:SetState(S_STRING)
+                string_mode = STRM_DOUBLE_QUOTE
             elseif operator_chars:find(styler:Current(), 1, true) then
                 styler:SetState(S_OPERATOR)
                 if styler:Current() == "|" then
