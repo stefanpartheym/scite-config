@@ -35,9 +35,9 @@ end
 -- Append key to table
 --------------------------------------------------------------------------------
 function TableAppendKey(t, key)
-    local index = table.getn(t) + 1
+    local index = #t + 1
     t[index] = key
-    
+
     return index
 end
 
@@ -45,12 +45,12 @@ end
 -- Check if t contains key
 --------------------------------------------------------------------------------
 function TableContainsKey(t, key)
-    for i = 1, table.getn(t), 1 do
+    for i = 1, #t, 1 do
         if t[i] == key then
             return true
         end
     end
-    
+
     return false
 end
 
@@ -59,19 +59,19 @@ end
 --------------------------------------------------------------------------------
 function TableToString(t)
     local result = "{"
-    
-    for i = 1, table.getn(t), 1 do
+
+    for i = 1, #t, 1 do
         if type(t[i]) == "table" then
             result = result .. TableDump(t[i])
         else
             result = result .. tostring(t[i])
         end
-        
-        if i < table.getn(t) then
+
+        if i < #t then
             result = result .. ', '
         end
     end
-    
+
     result = result .. "}"
     return result
 end
@@ -89,9 +89,9 @@ end
 function StringSplit(str, delimiter)
     local result = {}
     for s in string.gmatch(str, "[^"..delimiter.."]+") do
-        result[table.getn(result) + 1] = s
+        result[#result + 1] = s
     end
-    
+
     return result
 end
 
@@ -101,11 +101,11 @@ end
 function FileExists(file)
     result = false;
     f      = io.open(file);
-    
+
     if (f ~= nil) then
         io.close(f);
         result = true;
     end
-    
+
     return result;
 end
